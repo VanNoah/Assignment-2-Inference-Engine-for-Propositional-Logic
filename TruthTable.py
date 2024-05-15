@@ -15,7 +15,6 @@ class TruthTable:
             row = {symbol: model[symbol] for symbol in symbols}
             row[query] = self.evaluate_query(query, model)
             table.append(row)
-        print(table)
         self.display_table(table)
         return all(row[query] for row in table)
 
