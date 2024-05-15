@@ -1,22 +1,30 @@
 from KnowledgeBase import KnowledgeBase
 from Sentence import Sentence
 
+
 class TruthTable:
     """Implementation of Truth Table Entailment Method"""
     def __init__(self, knowledge_base):
         self.kb = knowledge_base
-        self.count = 0
 
     def solve(self, query):
         symbols = self.kb.symbols
         models = self.generate_models(symbols)
-        table = []
+        count_models = 0
+        entail_query = True
+
         for model in models:
-            row = {symbol: model[symbol] for symbol in symbols}
-            row[query] = self.evaluate_query(query, model)
-            table.append(row)
-        self.display_table(table)
-        return all(row[query] for row in table)
+            if self.evaluate_model(model):
+                count_models += 1
+                if not model[query]:
+                    entail_query = False
+
+        if entail_query:
+            print(f"YES: {count_models}")
+        else:
+            print("NO")
+
+        return entail_query
 
     def generate_models(self, symbols):
         models = []
@@ -28,26 +36,10 @@ class TruthTable:
             models.append(model)
         return models
 
-    def evaluate_query(self, query, model):
+    def evaluate_model(self, model):
         for sentence in self.kb.sentences:
             if not sentence.solve(model):
                 return False
-        return model[query]
+        return True
 
-    def display_table(self, table):
-        if not table:
-            print("No models generated.")
-            return
-        header = list(table[0].keys())
-        print("|", end="")
-        for col_name in header:
-            print(f" {col_name} |", end="")
-        print()
-        print("|" + "-" * (4 * len(header) - 1) + "|")
-        for row in table:
-            print("|", end="")
-            for col_name in header:
-                print(f" {str(row[col_name])[0]} |", end="")
-            print()
-        print()
 
