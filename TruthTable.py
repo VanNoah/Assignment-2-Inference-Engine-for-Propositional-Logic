@@ -19,12 +19,8 @@ class TruthTable:
                 if not model[query]:
                     entail_query = False
 
-        if entail_query:
-            print(f"YES: {count_models}")
-        else:
-            print("NO")
-
-        return entail_query
+        result = f"YES: {count_models}" if entail_query else "NO"
+        return result
 
     def generate_models(self, symbols):
         models = []
