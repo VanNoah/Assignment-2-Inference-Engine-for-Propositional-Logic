@@ -6,15 +6,15 @@ from TruthTable import TruthTable
 from ForwardChaining import ForwardChaining
 from BackwardChaining import BackwardChaining
 
-def run_tests():
+
+def run_tests(filenames):
     methods = ['TT', 'FC', 'BC']
     results = {}
 
-    for i in range(16):
-        filename = f'test{i}.txt'
+    for filename in filenames:
         try:
             tell, ask = FileReader.read(filename)
-        except:
+        except FileNotFoundError:
             print(f"File {filename} not found.")
             continue
 
@@ -47,8 +47,14 @@ def run_tests():
 
     return results
 
+
 if __name__ == "__main__":
-    results = run_tests()
+    if len(sys.argv) > 1:
+        filenames = sys.argv[1:]
+    else:
+        filenames = [f'test{i}.txt' for i in range(16)]
+
+    results = run_tests(filenames)
     for filename, methods in results.items():
         print(f"Results for {filename}:")
         for method, result in methods.items():
