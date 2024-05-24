@@ -61,7 +61,7 @@ def run_tests(filenames, methods = ['TT', 'FC', 'BC'], do_time = False):
                 result = "Unknown method entered."
 
             if do_time:
-                result += " {} seconds".format(time.time() - start_time)
+                result += " - {} seconds".format(time.time() - start_time)
 
             # Store the result in the inner dictionary
             results[filename][method] = result
