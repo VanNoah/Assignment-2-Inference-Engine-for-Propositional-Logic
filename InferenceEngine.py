@@ -15,8 +15,8 @@ def get_test_files():
     files.sort(key=lambda f: int(re.search(r'\d+', f).group()))
     return files
 
-def run_tests(filenames):
-    methods = ['TT', 'FC', 'BC']
+def run_tests(filenames, methods = ['TT', 'FC', 'BC']):
+    
     results = {}
 
     for filename in filenames:
@@ -60,11 +60,14 @@ def run_tests(filenames):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        filenames = sys.argv[1:]  # Use command-line arguments if provided
+        filenames = sys.argv[1:2]  # Use command-line arguments if provided
     else:
         filenames = get_test_files()  # Dynamically get all test files
 
-    results = run_tests(filenames)  # Run the tests
+    if len(sys.argv) > 2:
+        results = run_tests(filenames, sys.argv[2:])  # Run the tests
+    else:
+        results = run_tests(filenames)  # Run the tests
     for filename, methods in results.items():
         print(f"Results for {filename}:")
         for method, result in methods.items():
