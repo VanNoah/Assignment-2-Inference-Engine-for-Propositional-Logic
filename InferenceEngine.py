@@ -7,6 +7,7 @@ from Sentence import Sentence
 from TruthTable import TruthTable
 from ForwardChaining import ForwardChaining
 from BackwardChaining import BackwardChaining
+import time
 
 def get_test_files():
     """Return a list of all test files matching the pattern test*.txt in the current directory, sorted numerically."""
@@ -15,7 +16,7 @@ def get_test_files():
     files.sort(key=lambda f: int(re.search(r'\d+', f).group()))
     return files
 
-def run_tests(filenames, methods = ['TT', 'FC', 'BC']):
+def run_tests(filenames, methods = ['TT', 'FC', 'BC'], do_time = False):
     
     results = {}
 
@@ -38,6 +39,9 @@ def run_tests(filenames, methods = ['TT', 'FC', 'BC']):
 
         # Process each inference method
         for method in methods:
+            if do_time:
+                start_time = time.time()
+
             if method == 'TT':
                 kb = KnowledgeBase(tell, 'GS')  # Setup knowledge base with general sentences
                 tt = TruthTable(kb)
@@ -53,8 +57,12 @@ def run_tests(filenames, methods = ['TT', 'FC', 'BC']):
             else:
                 result = "Unknown method entered."
 
+            if do_time:
+                result += " {} seconds".format(time.time() - start_time)
+
             # Store the result in the inner dictionary
             results[filename][method] = result
+            
 
     return results
 
@@ -64,7 +72,9 @@ if __name__ == "__main__":
     else:
         filenames = get_test_files()  # Dynamically get all test files
 
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 5:
+        results = run_tests(filenames, sys.argv[2:5], True)  # Run the tests
+    elif len(sys.argv) > 2:
         results = run_tests(filenames, sys.argv[2:])  # Run the tests
     else:
         results = run_tests(filenames)  # Run the tests
