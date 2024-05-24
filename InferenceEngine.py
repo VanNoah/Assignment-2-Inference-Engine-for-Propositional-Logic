@@ -17,6 +17,9 @@ def get_test_files():
     return files
 
 def run_tests(filenames, methods = ['TT', 'FC', 'BC'], do_time = False):
+
+    if len(methods) < 1:
+        methods = ['TT', 'FC', 'BC']
     
     results = {}
 
@@ -67,17 +70,31 @@ def run_tests(filenames, methods = ['TT', 'FC', 'BC'], do_time = False):
     return results
 
 if __name__ == "__main__":
+    timer = False
+    methods = []
     if len(sys.argv) > 1:
-        filenames = sys.argv[1:2]  # Use command-line arguments if provided
+        filenames = sys.argv[1:]  # Use command-line arguments if provided
+
+        if "timer" in filenames:
+            timer = True
+            filenames.remove("timer")
+        if "TT" in filenames:
+            methods.append('TT')
+            filenames.remove("TT")
+        if "FC" in filenames:
+            methods.append('FC')
+            filenames.remove("FC")
+        if "BC" in filenames:
+            methods.append('BC')
+            filenames.remove("BC")
+
+        if len(filenames) < 1:
+            filenames = get_test_files()
     else:
         filenames = get_test_files()  # Dynamically get all test files
 
-    if len(sys.argv) > 5:
-        results = run_tests(filenames, sys.argv[2:5], True)  # Run the tests
-    elif len(sys.argv) > 2:
-        results = run_tests(filenames, sys.argv[2:])  # Run the tests
-    else:
-        results = run_tests(filenames)  # Run the tests
+
+    results = run_tests(filenames, methods, timer)  # Run the tests
     for filename, methods in results.items():
         print(f"Results for {filename}:")
         for method, result in methods.items():
